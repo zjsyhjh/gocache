@@ -7,3 +7,4 @@
 - 具体实现上，用一个有序数组来存储所有的server以及一个hashmap来存储每个server的具体信息，这里的键值对可能为\<server-hashvalue, server-ip\>
 - Add函数用于添加所有的server到数组中，采用32位循环冗余检验和算法得到server的hash值
 - Get函数用于获取每个key对应的server信息（例如ip），首先计算key对应的hash值，然后通过二分查找找到最近的server，通过hashmap获取server相应的信息（例如返回server对应的ip）
+- go test -v测试全部用例，go test -v -test.run TestHash测试单个函数
