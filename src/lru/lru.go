@@ -12,7 +12,8 @@ type entry struct {
 }
 
 /*
- * ll用来保存所有的item, 采用lru缓存算法, maxEntries指的是最大缓存数量, 0默认是不限制数量
+ * map表用于保存所有的item，ll采用lru缓存算法对item进行存储，每次剔除都剔除链表的最后一个item
+ * maxEntries指的是最大缓存数量, 0默认是不限制数量
  * list.Element指向的类型为entry类型
  */
 type Cache struct {
