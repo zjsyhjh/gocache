@@ -50,6 +50,7 @@ func (c *Cache) Add(key Key, value interface{}) {
 	e := c.ll.PushFront(&entry{key, value})
 	c.cache[key] = e
 	if c.maxEntries != 0 && c.ll.Len() > c.maxEntries {
+		c.RemoveOldest()
 	}
 }
 
@@ -65,4 +66,29 @@ func (c *Cache) Get(key Key) (value interface{}, ok bool) {
 		return e.Value.(*entry).value, true
 	}
 	return
+}
+
+/*
+ * 根据LRU算法移除链表最末尾的item
+ */
+func (c *Cache) RemoveOldest() {
+	if c.cache == nil {
+		return
+	}
+	e := c.ll.Back()
+	if e != nil {
+		c.removeElement(e)
+	}
+}
+
+/*
+ * remove item from list and Cache
+ */
+func (c *Cache) removeElement(e *list.Element) {
+	c.ll.Remove(e)
+	kv := e.Value.(*entry)
+	delete(c.cache, kv.key)
+	if c.Evict != nil {
+		c.Evict(kv.key, kv.value)
+	}
 }
