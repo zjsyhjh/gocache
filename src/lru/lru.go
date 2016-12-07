@@ -52,3 +52,17 @@ func (c *Cache) Add(key Key, value interface{}) {
 	if c.maxEntries != 0 && c.ll.Len() > c.maxEntries {
 	}
 }
+
+/*
+ * Get value from Cache
+ */
+func (c *Cache) Get(key Key) (value interface{}, ok bool) {
+	if c.cache == nil {
+		return
+	}
+	if e, hit := c.cache[key]; hit {
+		c.ll.MoveToFront(e)
+		return e.Value.(*entry).value, true
+	}
+	return
+}
