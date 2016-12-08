@@ -70,6 +70,18 @@ func (c *Cache) Get(key Key) (value interface{}, ok bool) {
 }
 
 /*
+ * Remove key from Cache
+ */
+func (c *Cache) Remove(key Key) {
+	if c.cache == nil {
+		return
+	}
+	if e, ok := c.cache[key]; ok {
+		c.removeElement(e)
+	}
+}
+
+/*
  * 根据LRU算法移除链表最末尾的item
  */
 func (c *Cache) RemoveOldest() {
@@ -92,4 +104,14 @@ func (c *Cache) removeElement(e *list.Element) {
 	if c.Evict != nil {
 		c.Evict(kv.key, kv.value)
 	}
+}
+
+/*
+ * size of Cache
+ */
+func (c *Cache) Size() int {
+	if c.cache == nil {
+		return 0
+	}
+	return c.ll.Len()
 }
