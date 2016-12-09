@@ -6,7 +6,7 @@ import "sync"
  * 每个请求
  */
 type call struct {
-	wg    *sync.WaitGroup
+	wg    sync.WaitGroup
 	value interface{}
 	err   error
 }
@@ -34,6 +34,7 @@ func (g *Group) DoProcess(key string, fn func() (interface{}, error)) (interface
 	//已经有请求在处理了，则等待
 	if c, ok := g.mapCall[key]; ok {
 		g.mu.Unlock()
+		// fmt.Println("key = " + key)
 		c.wg.Wait()
 		return c.value, c.err
 	}
