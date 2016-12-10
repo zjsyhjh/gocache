@@ -2,6 +2,9 @@ package view
 
 import (
 	"bytes"
+	"errors"
+	"io"
+	"strings"
 )
 
 /*
@@ -41,6 +44,16 @@ func (view ByteView) At(i int) byte {
 		return view.bytes[i]
 	}
 	return view.str[i]
+}
+
+/*
+ * return the length of ByteView
+ */
+func (view ByteView) Len() int {
+	if view.bytes != nil {
+		return len(view.bytes)
+	}
+	return len(view.str)
 }
 
 /*
@@ -108,4 +121,31 @@ func (view ByteView) equalString(s string) bool {
 		}
 	}
 	return true
+}
+
+/*
+ * return io.ReadSeeker
+ */
+func (view ByteView) Reader() io.ReadSeeker {
+	if view.bytes != nil {
+		return bytes.NewReader(view.bytes)
+	}
+	return strings.NewReader(view.str)
+}
+
+/*
+ * ReadAt implements io.ReadAt on the bytes in view
+ */
+func (view ByteView) ReadAt(b []byte, offset int64) (n int, err error) {
+	if offset < 0 {
+		return 0, errors.New("invalid offset")
+	}
+	if offset >= int64(view.Len()) {
+		return 0, io.EOF
+	}
+	n = view.SliceFrom(int(offset)).Copy(b)
+	if n < len(b) {
+		err = io.EOF
+	}
+	return
 }
