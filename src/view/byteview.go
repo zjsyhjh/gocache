@@ -34,6 +34,16 @@ func (view ByteView) String() string {
 }
 
 /*
+ * return the byte by the provided index
+ */
+func (view ByteView) At(i int) byte {
+	if view.bytes != nil {
+		return view.bytes[i]
+	}
+	return view.str[i]
+}
+
+/*
  * return slices the view
  */
 func (view ByteView) Slice(from, to int) ByteView {
