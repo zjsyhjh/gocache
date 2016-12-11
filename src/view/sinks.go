@@ -14,6 +14,11 @@ type Sink interface {
 	view() (ByteView, error)
 }
 
+type stringSink struct {
+	strptr   *string
+	byteview ByteView
+}
+
 func cloneBytes(b []byte) []byte {
 	c := make([]byte, len(b))
 	copy(c, b)
